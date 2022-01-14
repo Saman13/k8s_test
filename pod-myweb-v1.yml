@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-web
+  labels:
+    app : main
+    tier : frontend
+    owner : Saman
+spec:
+  containers:
+    - name: container-apache
+      image: httpd:latest
+      ports:
+        - containerPort: 80
