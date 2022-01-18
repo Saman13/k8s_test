@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: my-web-deployment
-        image: saman13/test:v1
+        image: saman13/test:v2
         ports:
         - containerPort: 80
 
