@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-web-deployment-with-autoscaling
+  labels:
+    app: my-k8s-application #лейблы оч желательны
+spec:
+  replicas: 2 #колличество реплик
+  selector: #с какими подами будет работать деплоймент
+    matchLabels:
+      app: my-web-deployment-with-autoscaling
+  template: #описание самого пода
+    metadata:
+      labels:
+        app: my-web-deployment-with-autoscaling
+    spec:
+      containers:
+      - name: my-web-deployment
+        image: saman13/test:v1
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2beta2
+    kind: Deployment
+    name: my-web-deployment-with-autoscaling
+  minReplicas: 2 # минимальное коллическтво реплик при автоскейлинге
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70 #процент загрузки процессора
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 70 #процент использования памяти
