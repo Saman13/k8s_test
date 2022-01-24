@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-web-deployment
+  labels:
+    app: my-k8s-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-web-deployment
+  template:
+    metadata:
+      labels:
+        app: my-web-deployment
+    spec:
+      containers:
+      - name: my-web-deployment
+        image: saman13/test:latest
+        ports:
+        - containerPort: 80
+      - name: not-my-web
+        image: tomcat:latest
+        ports:
+        - containerPort: 8080
+---
+#от сюда пошел сервис на эти контейнеры
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-multi-pods-service
+  labels:
+    env: prod
+    owner: Saman
+spec:
+  type: LoadBalancer
+  selector:
+    app: my-web-deployment #селектор для подов, должен совпадать
+  ports:
+    - name: my-web-app-listener #порты для 1 контейнера
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: not-my-web-listener #порты для 2 контейнера
+      protocol: TCP
+      port: 8888 # порт балансера
+      targetPort: 8080 # порт контейнера
