@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-hosts
+spec:
+  rules:
+  - host: www.saman.net #адрес нашего ресурса, должен быть создан DNS
+    http:
+      paths: "/page1" #адрес будет www.saman.net/page1
+      - backend:
+          serviceName: web1 #имя первого деплоя
+          servicePort: 80
+      paths: "/page2"
+      - backend:
+          serviceName: web2 #имя второго деплоя
+          servicePort: 8080 #порт контейнера который опубликовать
